@@ -1,0 +1,70 @@
+<div class="flex flex-col flex-auto md:w-240 md:min-w-240  max-h-screen -m-6 relative">
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg font-medium">Lista de Periodos</div>
+        <div class="flex">
+            <button mat-icon-button (click)="matDialogRef.close()" [tabIndex]="-1">
+                <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+            </button>
+        </div>
+    </div>
+    <table mat-table multiTemplateDataRows [dataSource]="dataSource" class="mat-elevation-z8">
+
+        <!--- Note that these columns can be defined in any order.
+              The actual rendered columns are set as a property on the row definition" -->
+        <ng-container matColumnDef="todo">
+            <th mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="$event ? masterToggle() : null"
+                    [checked]="selection.hasValue() && isAllSelected()"
+                    [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+                </mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(element) : null"
+                    [checked]="selection.isSelected(element)" [aria-label]="checkboxLabel(element)">
+                </mat-checkbox>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="imagen">
+            <th mat-header-cell *matHeaderCellDef> Foto </th>
+            <td mat-cell *matCellDef="let element">
+                <div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
+                    <ng-container *ngIf="element.profileImageURL">
+                        <img class="object-cover w-full h-full"
+                            [src]="'http://localhost:3200/' + element.profileImageURL"
+                            alt="'http://localhost:3200/' + element.profileImageURL" />
+
+                    </ng-container>
+                </div>
+            </td>
+        </ng-container>
+        <!-- Position Column -->
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Nombre </th>
+            <td mat-cell *matCellDef="let element"> {{element.displayName}} </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons
+    aria-label="Select page of periodic elements">
+    </mat-paginator>
+    <div class="flex w-full justify-end">
+        <button  
+        (click)="this.matDialogRef.close()"
+        mat-button>
+            Cancelar
+        </button>
+        <button
+            class="px-6 ml-3"
+            mat-flat-button
+            (click)="save()"
+            [color]="'primary'">
+           Guardar
+        </button>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+<div class="flex flex-col flex-auto  ">
+    <ng-container >
+        <div class="absolute top-0 right-0 pt-4 pr-4">
+            <button
+                mat-icon-button
+                mat-dialog-close
+                (click)="matDialogRef.close()"
+                >
+                <mat-icon
+                    class="text-secondary"
+                    [svgIcon]="'heroicons_outline:x'"></mat-icon>
+            </button>
+        </div>
+    </ng-container>
+    <div mat-dialog-content>
+        <div
+                class="flex flex-0 mb-2 items-center justify-center w-10 h-10 sm:mr-4 rounded-full text-blue-600 bg-blue-100 dark:text-blue-50 dark:bg-blue-600"
+                >
+                <mat-icon
+                    class="text-current"
+                    >fingerprint</mat-icon>
+            </div>
+        <p class="text-xl leading-6 font-medium mb-2">Ingrese su pin de firma</p>
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Pin</mat-label>
+            <input type="password" matInput [(ngModel)]="data.pin">
+        </mat-form-field>
+    </div>
+    <div mat-dialog-actions>
+        <button mat-flat-button (click)="matDialogRef.close()">Cancelar</button>
+        <button mat-flat-button mat-dialog-close [color]="'primary'" (click)="firmar()" cdkFocusInitial>Firmar</button>
+    </div>
+</div>

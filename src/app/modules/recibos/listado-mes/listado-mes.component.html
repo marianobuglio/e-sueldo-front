@@ -1,0 +1,135 @@
+<div class="mat-elevation-z8 flex-auto w-full ">
+  <mat-drawer
+  class="w-100 dark:bg-gray-900"
+  [autoFocus]="false"
+  [mode]="'side'"
+  [opened]="'false'"
+  [position]="'end'"
+  #matDrawer>
+  <!-- Demo sidebar -->
+  <ng-container *ngIf="reciboSelected">
+    <app-detalle-recibo [recibo]="reciboSelected" (close)="matDrawer.toggle()"></app-detalle-recibo>
+  </ng-container>
+</mat-drawer>
+  <div class="flex-auto p-2" >
+    <div class="flex-auto">
+      <mat-form-field
+          class="fuse-mat-dense fuse-mat-rounded w-full min-w-50"
+          subscriptSizing="dynamic">
+          <mat-icon
+              class="icon-size-5"
+              matPrefix
+              [svgIcon]="'heroicons_solid:search'"></mat-icon>
+          <input
+              (keyup)="applyFilter($event.target.value)"
+              matInput
+              [autocomplete]="'off'"
+              [placeholder]="'Buscar Recibo'">
+      </mat-form-field>
+  </div>
+  </div>
+    <table multiTemplateDataRows mat-table [dataSource]="dataSource">   <!-- Position Column -->
+      <ng-container matColumnDef="todo">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox 
+            (change)="$event ? masterToggle() : null"
+            [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()"
+            [aria-label]="checkboxLabel()">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let element"> 
+          <mat-checkbox 
+          (click)="$event.stopPropagation()"
+          (change)="$event ? selection.toggle(element) : null"
+          [checked]="selection.isSelected(element)"
+          [aria-label]="checkboxLabel(element)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="imagen">
+        <th mat-header-cell *matHeaderCellDef> Foto </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
+            <ng-container *ngIf="element.empleado.profileImageURL">
+              <img
+                  class="object-cover w-full h-full"
+                  [src]="'http://localhost:3200/' + element.empleado.profileImageURL"
+                  alt="'http://localhost:3200/' + element.empleado.profileImageURL"/>
+                
+            </ng-container>          
+          </div>
+        </td>
+      </ng-container>
+    
+      <!-- Position Column -->
+      <ng-container matColumnDef="legajo">
+        <th mat-header-cell *matHeaderCellDef> Legajo </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="font-medium leading-5 truncate">{{element.empleado ? element.empleado.displayName : '-'}}</div>
+          <div class="leading-5 truncate text-secondary">{{ element.empleado ? element.empleado.cuit : '-'}}</div>
+           
+          </td>
+      </ng-container>
+  
+     
+  
+      <!-- Weight Column -->
+      <ng-container matColumnDef="periodo">
+        <th mat-header-cell *matHeaderCellDef> Periodo </th>
+        <td mat-cell *matCellDef="let element"> {{element.periodo | date:'d/M/yy' }} </td>
+      </ng-container>
+  
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="tipoRecibo">
+        <th mat-header-cell *matHeaderCellDef> Tipo Recibo </th>
+        <td mat-cell *matCellDef="let element"> {{element.tipoRecibo.descripcion}} </td>
+      </ng-container>
+
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="firmaEmpleador">
+        <th mat-header-cell *matHeaderCellDef> Firma Empleador </th>
+        <td mat-cell *matCellDef="let element"> 
+            <mat-icon class="text-green-500" *ngIf="element.firmadoEmpleador.firmado">task_alt</mat-icon>
+            <mat-icon class="text-red-500" *ngIf="!element.firmadoEmpleador.firmado">highlight_off</mat-icon>
+         </td>
+      </ng-container>
+
+      <ng-container matColumnDef="firmaEmpleado">
+        <th mat-header-cell *matHeaderCellDef> Firma Empleado </th>
+        <td mat-cell *matCellDef="let element">
+            <mat-icon class="text-green-500" *ngIf="element.firmadoEmpleado.firmado">task_alt</mat-icon>
+            <mat-icon class="text-red-500" *ngIf="!element.firmadoEmpleado.firmado">highlight_off</mat-icon>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef> Recibo</th>
+        <td class="p-2 flex" mat-cell *matCellDef="let element">
+            <div class="relative ">
+                <mat-icon
+                (click)="showModal(element.pdf)"
+                class="icon-size-10 text-hint opacity-50"
+                [svgIcon]="'heroicons_solid:document'"></mat-icon>
+                <div
+                class="bg-red-600 absolute left-0 bottom-0 px-1.5 rounded text-sm font-semibold leading-5 text-white">
+                PDF
+                </div>
+              </div>
+                <mat-icon
+                class="icon-size-5"
+                [svgIcon]="'heroicons_solid:information-circle'" (click)="reciboSelected = element ;matDrawer.open()"></mat-icon>
+            
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" ></tr>
+    </table>
+  
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                   showFirstLastButtons
+                   aria-label="Select page of periodic elements">
+    </mat-paginator>
+  </div>
+  

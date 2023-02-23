@@ -1,0 +1,36 @@
+<div class="flex justify-between m-4">
+    <form
+    class="flex flex-col items-start w-full"
+   
+    [formGroup]="form">
+    <div class="flex w-full md:p-5 p-3 rounded-lg shadow bg-card">
+        <input
+            #titleInput
+            matInput
+            class=" flex-auto text-lg font-medium leading-5"
+            [formControlName]="'title'"
+            [placeholder]="'Ingrese nombre de la tarea...'"
+            (keydown.enter)="save()"
+           >
+    </div>
+    <div class="flex items-center mt-2">
+        <button
+            class="h-8 min-h-8 "
+            mat-flat-button
+            [color]="'primary'"
+            [type]="'button'"
+            (click)="save()">
+            Añadir Tarea
+        </button>
+        <button
+            class="ml-1 w-8 h-8 min-h-8"
+            mat-icon-button
+            [type]="'button'"
+            (click)="close.emit(true)">
+            <mat-icon
+                class="icon-size-4"
+                [svgIcon]="'heroicons_solid:x'"></mat-icon>
+        </button>
+    </div>
+</form>
+</div>

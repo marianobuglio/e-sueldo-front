@@ -1,0 +1,63 @@
+<div class="flex flex-col flex-auto p-6 md:p-8">
+
+    <!-- Close button -->
+    <div class="flex items-center justify-end">
+        <a
+            (click)="close.emit(true)"
+            mat-icon-button
+            >
+            <mat-icon [svgIcon]="'heroicons_outline:x'" ></mat-icon>
+        </a>
+    </div>
+
+    <form class="flex flex-col" [formGroup]="formDetalle">
+        
+        <mat-form-field class="flex-auto">
+            <mat-label>Nombre</mat-label>
+            <input
+                id="name"
+                [formControlName]="'name'"
+                matInput
+                [placeholder]="'Nombre Tablero'">
+            <mat-icon
+                class="icon-size-5"
+                matPrefix
+                [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+            <mat-error *ngIf="formDetalle.get('name').hasError('required')">
+                Nombre es obligatorio.
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="flex-auto">
+            <mat-label>Integrantes</mat-label>
+            <mat-select [formControlName]="'integrantes'" [compareWith]="copareWithUser" name="integrantes" multiple>
+              <mat-option *ngFor="let user of users" [value]="user">
+                {{user.displayName}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="formDetalle.get('integrantes').hasError('required')">
+                Seleccione al menos un integrante
+            </mat-error>
+        </mat-form-field>
+
+    </form>
+
+
+    <!-- Actions -->
+    <div class="grid gap-4 w-full mt-8">
+        <button
+            (click)="openTableroPLantilla()"
+            class="flex-auto"
+            mat-flat-button
+            [color]="'primary'">
+            Guardar Como Plantilla
+        </button>
+        <button
+            (click)="save()"
+            class="flex-auto"
+            mat-flat-button
+            [color]="'primary'">
+            Actualizar
+        </button>
+    </div>
+
+</div>

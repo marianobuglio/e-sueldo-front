@@ -1,0 +1,210 @@
+<div class="flex flex-col flex-auto md:w-240 md:min-w-240  max-h-screen -m-6 relative">
+
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg font-medium">Tarjeta</div>
+        <div class="flex">
+            <button 
+            (click)="openDialogPlantilla()"
+            mat-mini-fab color="primary" 
+            aria-label="Example icon button with a home icon">
+                <mat-icon>save</mat-icon>
+            </button>
+            <button 
+            class="ml-2"
+            (click)="openDialogListPlantillas()"
+            mat-mini-fab color="primary" 
+            aria-label="Example icon button with a home icon">
+                <mat-icon>list</mat-icon>
+            </button>
+            <button mat-icon-button (click)="matDialogRef.close()" [tabIndex]="-1">
+                <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <!-- Card form -->
+    <form class="flex flex-col flex-0 items-start w-full p-6 sm:p-8 space-y-6 overflow-y-auto" #form="ngForm">
+        <!-- Title -->
+        <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+            <mat-label>Asunto</mat-label>
+            <textarea matInput name="description" [ngModelOptions]="{standalone: true}"
+                [(ngModel)]="data.card.description" [rows]="1" cdkTextareaAutosize [cdkAutosizeMinRows]="1">
+            </textarea>
+        </mat-form-field>
+
+        <!-- Description -->
+        <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+            <mat-label>Descripcion</mat-label>
+            <textarea matInput name="descripcion" [ngModelOptions]="{standalone: true}"
+                [(ngModel)]="data.card.descripcion" [rows]="1" cdkTextareaAutosize [cdkAutosizeMinRows]="1">
+            </textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Integrantes</mat-label>
+            <mat-select [(ngModel)]="data.card.integrantes" name="integrantes" [compareWith]="capareWithUser"
+                [ngModelOptions]="{standalone: true}" multiple>
+                <mat-option *ngFor="let user of users" [value]="user">
+                    {{user.displayName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Prioridad</mat-label>
+            <mat-select [(ngModel)]="data.card.prioridad" name="prioridad" [compareWith]="capareWithPrioridad"
+                [ngModelOptions]="{standalone: true}">
+                <mat-option *ngFor="let prioridad of prioridades" [value]="prioridad">
+                    {{prioridad.nombre}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div class="flex justify-between w-full">
+            <h1 class="text-2xl">Tareas</h1>
+            <button class="w-8 h-8 min-h-8" mat-icon-button [matMenuTriggerFor]="listMenu">
+                <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:dots-vertical'"></mat-icon>
+            </button>
+            <mat-menu #listMenu="matMenu">
+                <button mat-menu-item (click)="addLista = true">
+                    <mat-icon class="icon-size-5">add</mat-icon>
+                    Agregar Lista
+                </button>
+            </mat-menu>
+        </div>
+
+        <div class="w-full ">
+            <ng-container *ngIf="addLista">
+                <app-add-lista-tareas (saved)="addLista = false; addListaTareas($event)" (close)="addLista = false"
+                    [buttonTitle]="'guardar'"></app-add-lista-tareas>
+            </ng-container>
+            <div *ngFor="let lista of data.card.ListaTareas; ; index as listaIndex " class="my-4">
+                <div class="flex justify-between m-4">
+
+                    <h1 class="md:text-xl flex items-center">
+                        <mat-icon class="mr-2" [ngClass]="{'text-green-500': lista.completado == 100}"
+                            svgIcon="heroicons_solid:badge-check"></mat-icon>{{lista.name}}
+                    </h1>
+                    <ng-container *ngIf="lista.integrantes?.length">
+                        <div class="flex items-center space-x-1.5 md:visible invisible">
+                            <ng-container *ngFor="let member of lista.integrantes.slice(0, 5); trackBy: trackByFn">
+                                <img [matTooltip]="member.displayName"
+                                    class="flex-0 w-8 h-8 rounded-full ring ring-offset-1 ring-bg-card ring-offset-transparent object-cover"
+                                    [src]="'http://localhost:3200/'+ member.profileImageURL" alt="Member avatar">
+                            </ng-container>
+                            <ng-container *ngIf="lista.integrantes.length > 5">
+                                <div [matTooltip]="getAnotherNames(lista.integrantes.slice(5))"
+                                    class="flex flex-0 items-center justify-center w-8 h-8 rounded-full ring ring-offset-1 ring-bg-card ring-offset-transparent bg-gray-200 text-gray-500">
+                                    <div class="text-md font-semibold">
+                                        +{{ lista.integrantes.slice(5).length }}
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+                    <button class="w-8 h-8 min-h-8" mat-icon-button [matMenuTriggerFor]="listMenu">
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:dots-vertical'"></mat-icon>
+                    </button>
+                    <mat-menu #listMenu="matMenu">
+                        <button (click)="showAdd(listaIndex)" mat-menu-item>
+                            <mat-icon class="icon-size-5">add</mat-icon>
+                            Agregar tarea
+                        </button>
+                        <button (click)="showAddintegrantes(listaIndex)" mat-menu-item>
+                            <mat-icon class="icon-size-5">add</mat-icon>
+                            Agregar Integrante
+                        </button>
+                    </mat-menu>
+                </div>
+                <mat-progress-bar mode="determinate" [color]="'primary'" [value]="lista.completado"></mat-progress-bar>
+                <ng-container *ngFor="let tarea of lista.tareas; index as indexTarea">
+                    <p>
+                        <mat-checkbox [ngModelOptions]="{standalone: true}"
+                            (change)="calculoPorcentajeTareas(listaIndex)" [(ngModel)]="tarea.completa">
+                            {{tarea.descripcion}}</mat-checkbox>
+                    </p>
+                </ng-container>
+                <app-add-tareas *ngIf="showTarea === listaIndex && showIntegrantes === undefined"
+                    [attr.id]="'tarea' + listaIndex" (saved)="addTarea(listaIndex,$event)"
+                    (close)="showTarea = undefined" [buttonTitle]="'guardar'"></app-add-tareas>
+                <app-add-integrantes *ngIf="showTarea === undefined && showIntegrantes === listaIndex"
+                    [integrantesTarjeta]="getIntegrantesTarjeta()" [integrantesLista]="getIntegrantesLista(listaIndex)"
+                    (saved)="addUsersToLista(listaIndex,$event)" (close)="showIntegrantes = undefined">
+                </app-add-integrantes>
+                <button class="px-3 sm:-mr-4" mat-button
+                    (click)="lista.expandCollapseState = !lista.expandCollapseState;
+                                     lista.expandCollapse === 'expanded' ? lista.expandCollapse = 'collapsed' : lista.expandCollapse = 'expanded'">
+                    <span class="mr-1">{{lista.comentarios ? lista.comentarios.length + ' comentarios' : '0 comentarios'}}</span>
+                    <mat-icon class="icon-size-5 transition-transform ease-in-out duration-150 rotate-0"
+                        [svgIcon]="'heroicons_solid:chevron-down'"></mat-icon>
+                </button>
+                <div *ngIf="lista.expandCollapseState" [@expandCollapse]="lista.expandCollapse"
+                    class="animated-box">
+                    <hr class="border-b m-0">
+                    <div class="flex flex-col mx-4 sm:mx-8 mt-6 mb-3">
+                        <div class="flex  flex-wrap">
+                            <div class="flex w-full">
+                                <img class="w-12 h-12 rounded-full mr-5" [src]="environment.url + user.profileImageURL "
+                                    alt="Card cover image">
+                                <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+                                    <textarea matInput  name="comment" [ngModelOptions]="{standalone: true}" [(ngModel)]="comment" [placeholder]="'Escribir un comentario...'" [rows]="3"
+                                        cdkTextareaAutosize></textarea>
+                                </mat-form-field>
+                            </div>
+                            <div class="flex flex-1 justify-end  ">
+                                <button
+                                    class="h-8 min-h-8 mt-2"
+                                    mat-flat-button
+                                    [color]="'primary'"
+                                    [type]="'button'"
+                                    (click)="addComment(listaIndex)">
+                                    Añadir Comentario
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="border-b mx-4 sm:mx-8 my-0">
+                    <!-- comentarios -->
+                    <div class="max-h-120 overflow-y-auto">
+                        <div class="relative flex flex-col mx-4 sm:mx-8 my-6">
+                            <div class="flex items-start mb-2" *ngFor="let comment of lista.comentarios">
+                                <img class="w-8 h-8 rounded-full mr-4" [src]="environment.url + comment.usuario.profileImageURL "
+                                    alt="Card cover image">
+                                <div class="flex flex-col mt-0.5">
+                                    <span>
+                                        <b>{{comment.usuario.displayName}}</b> {{comment.comentario}}
+                                    </span>
+                                    <!-- <div class="flex items-center text-sm text-secondary mt-2">
+                                        <span class="mr-2 cursor-pointer hover:underline">Like</span>
+                                        <span class="mr-2 cursor-pointer hover:underline">Reply</span>
+                                        <span class="mr-2 cursor-pointer hover:underline">Hide replies</span>
+                                        <span class="mr-2">&bull;</span>
+                                        <span>17 min</span>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex w-full justify-end">
+            <button  
+            (click)="this.matDialogRef.close()"
+            mat-button>
+                Cancelar
+            </button>
+            <button
+                class="px-6 ml-3"
+                mat-flat-button
+                (click)="save()"
+                [color]="'primary'">
+               Guardar
+            </button>
+        </div>
+        
+            
+    </form>
+</div>

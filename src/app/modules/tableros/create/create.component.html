@@ -1,0 +1,52 @@
+
+<div class="flex flex-col flex-auto md:w-240 md:min-w-240  max-h-screen -m-6 relative">
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg font-medium">Crear tablero</div>
+        <div class="flex">
+            <button mat-icon-button (click)="matDialogRef.close()" [tabIndex]="-1">
+                <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <form [formGroup]="formTablero" class="flex flex-col flex-0 items-start w-full p-6 sm:p-8 space-y-6 overflow-y-auto">
+        <mat-form-field class="w-full" appareamce="fill">
+            <mat-label>Nombre</mat-label>
+            <input matInput name="name" [formControlName]="'name'">
+            <mat-error *ngIf="formTablero.get('name').hasError('required')">
+                Nombre es obligatorio.
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Integrantes</mat-label>
+            <mat-select [formControlName]="'integrantes'" multiple>
+              <mat-option *ngFor="let user of users" [value]="user._id">
+                {{user.displayName}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Plantilla</mat-label>
+            <mat-select [formControlName]="'plantillaTablero'" [compareWith]="copareWithPlantilla" >
+              <mat-option *ngFor="let plantilla of plantillas"  [value]="plantilla">
+                {{plantilla.name}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <div class="flex w-full justify-end">
+            <button  
+            (click)="this.matDialogRef.close()"
+            mat-button>
+                Cancelar
+            </button>
+            <button
+                class="px-6 ml-3"
+                (click)=save()
+                mat-flat-button
+                [color]="'primary'">
+               Guardar
+            </button>
+        </div>
+    </form>
+</div>

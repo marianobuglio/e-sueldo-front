@@ -1,0 +1,22 @@
+<!-- Button -->
+<button class="mr-8 w-30"
+    mat-icon-button
+    [matMenuTriggerFor]="empresas">
+    <mat-icon>factory</mat-icon>
+    <p class="text-sm ml-2">{{nameEmpresa()}}</p>
+</button>
+
+<!-- Language menu -->
+<mat-menu
+    #empresas="matMenu">
+    <ng-container *ngFor="let emp of user.empresas; ">
+        <button
+            mat-menu-item
+            (click)="updateEmpresaActiva(emp._id)">
+            <span class="flex items-center">
+                <span class="ml-3">{{emp.name}}</span>
+            </span>
+        </button>
+    </ng-container>
+</mat-menu>
+

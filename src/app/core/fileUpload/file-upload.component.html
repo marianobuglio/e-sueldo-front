@@ -1,0 +1,36 @@
+<div class="border flex justify-center m-2 rounded-lg shadow-md date flex-col">
+    <input type="file" class="file-input" [accept]="requiredFileType" (change)="onFileSelected($event)" #fileUpload>
+
+    <div class="flex justify-end p-2 shadow-md date ">
+        <button mat-mini-fab color="primary" class="upload-btn " (click)="fileUpload.click()" type="button">
+            <mat-icon>attach_file</mat-icon>
+        </button>
+    </div>
+    
+    <div class="file-upload file-upload flex  flex-col  min-h-20">
+            <div class="date" *ngIf="files">
+                <ng-container *ngFor="let file of files">
+                    <div class="flex justify-between items-center p-2">
+                        <span  class="text-xl">{{file.name}}</span>
+                        <button [color]="'warn'" mat-mini-fab > 
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                    <mat-divider></mat-divider>
+                </ng-container>
+            </div>
+            <div class="min-h-20 flex justify-center items-center">
+                <h3 *ngIf="!files" class="text-md">No hay archivos subidos</h3>
+            </div>
+    </div>
+
+    <div class="progress">
+
+        <mat-progress-bar class="progress-bar" mode="determinate" [value]="uploadProgress" *ngIf="uploadProgress">
+
+        </mat-progress-bar>
+
+        <mat-icon class="cancel-upload" (click)="cancelUpload()" *ngIf="uploadProgress">delete_forever</mat-icon>
+
+    </div>
+</div>

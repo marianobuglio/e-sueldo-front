@@ -1,0 +1,47 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatSelectModule} from '@angular/material/select';
+import { FuseConfirmationModule } from '@fuse/services/confirmation';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+
+
+@NgModule({
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatTableModule,
+        MatIconModule,
+        MatButtonModule,
+        MatInputModule,
+        MatSidenavModule,
+        MatPaginatorModule,
+        MatSelectModule,
+        FuseConfirmationModule,
+        MatDatepickerModule,
+    ],
+    exports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatTableModule,
+        MatIconModule,
+        MatButtonModule,
+        MatInputModule,
+        MatSidenavModule,
+        MatPaginatorModule,
+        MatSelectModule,
+        FuseConfirmationModule,
+        MatDatepickerModule
+    ]
+})
+export class SharedModule
+{
+}

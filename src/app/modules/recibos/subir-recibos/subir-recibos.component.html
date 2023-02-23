@@ -1,0 +1,51 @@
+<div class="flex flex-col flex-auto p-6 md:p-8">
+    <div class="flex items-center justify-end">
+        <a
+            (click)="close.emit('close')"
+            mat-icon-button
+            >
+            <mat-icon [svgIcon]="'heroicons_outline:x'" ></mat-icon>
+        </a>
+    </div>
+    <h1 class="text-2xl">Subir Recibos</h1>
+    <form [formGroup]="uploadForm" class="flex flex-col" (submit)="sendPDF()">
+        <mat-form-field appearance="fill" class="example-form-field mt-2 mx-2">
+        <mat-label>Tipo Liquidación</mat-label>
+        <mat-select [formControlName]="'tipoLiqui'">
+            <mat-option *ngFor="let liqui of tiposLiquidacion" [value]="liqui._id">
+            {{liqui.descripcion}}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="tipoLiqui.invalid && (tipoLiqui.dirty || tipoLiqui.touched)"
+            class="text-red-600">
+            <ng-container *ngIf="tipoLiqui.errors?.['required']">
+            Tipo de liquidación es requerido
+            </ng-container>
+        </mat-error>
+    </mat-form-field>
+        <mat-form-field appearance="fill" class="example-form-field mt-2 mx-2">
+            <mat-label>Periodo</mat-label>
+            <input matInput [matDatepicker]="datepicker" [formControlName]="'periodo'" >
+            <mat-hint>Seleccione un periodo</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
+            <mat-datepicker 
+            (monthSelected)="setMonth($event, datepicker)"
+            [startView]="'multi-year'" 
+            #datepicker>
+            </mat-datepicker>
+            <div *ngIf="periodo.invalid && (periodo.dirty || periodo.touched)"
+            class="alert alert-danger">
+                <div *ngIf="periodo.errors?.['required']">
+               Periodo es requerido
+                </div>
+            </div>
+        </mat-form-field>
+    
+        <app-file-upload (url)="setUrl($event)"></app-file-upload>
+    
+        <button class="mt-4" mat-flat-button [color]="'primary'" type="submit">
+            <mat-icon>send </mat-icon>
+            Enviar Recibos
+        </button>
+    </form>
+</div>
